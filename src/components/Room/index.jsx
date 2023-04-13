@@ -2,7 +2,9 @@ import { useRef } from "react";
 import { OrbitControls, OrthographicCamera } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Light } from "../Light";
+import { Furniture } from "./Furniture";
 import { material } from "../Utility";
+import { Electronics } from "./Electronics";
 
 function MainObject(props) {
   const { type } = props;
@@ -74,6 +76,8 @@ const Objects = () => {
   return(
     <group>
       <Surface/>
+      <Furniture />
+      <Electronics />
     </group>
   );
 }
