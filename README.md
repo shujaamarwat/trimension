@@ -1,72 +1,41 @@
-# trimension
+# Trimension
 
- The repo contains a collection of experiments built with three.js, a powerful JavaScript library for creating 3D graphics in the browse
+This project contains a collection of experiments built with Three.js, React.js, and Tailwind CSS. The experiments are interactive 3D scenes that showcase the capabilities of Three.js and demonstrate how it can be used to create immersive web experiences.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Experiments
 
-## Available Scripts
+The following experiments are included in this project:
 
-In the project directory, you can run:
+### Room
 
-### `npm start`
+This experiment is a 3D room that was built from scratch using Three.js. The room contains furniture and electronics, and you can interact with the objects to move them around and rotate them. The experiment also includes lighting and shadows to make the scene more realistic.
 
-Runs the app in the development mode.
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Person
 
-The page will reload when you make changes.
-You may also see any lint errors in the console.
+This experiment is still in its initial phase but the main objective would be to build a 3D person from scratch.
 
-### `npm test`
+## Getting Started
 
-Launches the test runner in the interactive watch mode.
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+To run the experiments locally, follow these steps:
 
-### `npm run build`
+1. Shift to dev branch
+2. Clone this repository to your local machine.
+3. Install dependencies by running `npm install` in the root directory.
+4. Start the client by running `npm run start` in the root directory.
+5. Open your browser and navigate to `http://localhost:3000`.
 
-Builds the app for production to the `build` folder.
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Built With
 
-The build is minified and the filenames include the hashes.
-Your app is ready to be deployed!
+* [Three.js](https://threejs.org/)
+* [React.js](https://reactjs.org/)
+* [Tailwind CSS](https://tailwindcss.com/)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Acknowledgments
 
-### `npm run eject`
+* [Three.js Fundamentals](https://threejsfundamentals.org/)
+* [React Three Fiber](https://github.com/pmndrs/react-three-fiber)
+* [Tailwind Starter Kit](https://www.creative-tim.com/learning-lab/tailwind-starter-kit/presentation) by Creative Tim
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## License
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project is licensed under the MIT License - see the [LICENSE](https://chat.openai.com/c/LICENSE) file for details.
