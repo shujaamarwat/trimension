@@ -1,0 +1,141 @@
+{
+  "Title": "Isometric Room Editor (Web Three.js Studio)",
+  "PriorityScore": 18.5,
+  "Category": ["High ROI", "Portfolio Highlight"],
+  "Feasibility": "High",
+  "ScenariosPassed": ["Feasibility", "AI", "Dataset", "Export"],
+  "RecommendedScreens": [
+    "Landing/Onboarding",
+    "Editor",
+    "Asset Library Sidebar",
+    "AI Scene Generator Panel",
+    "Texture Upload Dialog",
+    "Export Modal",
+    "Settings",
+    "Help/Shortcuts"
+  ],
+  "DesignNotes": {
+    "UIFramework": "React + Tailwind + Radix UI + shadcn/ui",
+    "Layout": "Resizable left sidebar (assets) + top toolbar + main canvas; bottom status bar",
+    "Theme": "Clean, minimal, light/dark with subtle elevation",
+    "AnimationHint": "Micro-interactions on drag/drop & toolbar; smooth panel slide-ins"
+  },
+  "TechStack": {
+    "Automation": "n8n for build tasks (opt-in AI scene generation pipeline)",
+    "Frontend": "React (Vite or Next.js) + Three.js + Zustand",
+    "Backend": "Next.js API routes (upload, export, AI calls) or minimal Node/Express",
+    "AI": "LLM API (OpenAI or compatible) for scene text-to-layout + rules engine",
+    "DatasetTools": "Local JSON asset catalog; TextureLoader for user uploads",
+    "Testing": "Vitest/Jest for units, Playwright for E2E, Testing Library for React",
+    "Deployment": "Vercel (static + serverless) or Netlify; asset CDN/S3 for uploads"
+  },
+  "TestingChecklist": [
+    "Canvas initializes with fixed isometric camera and locked controls",
+    "Drag-and-drop places assets with snap-to-grid at correct world coords",
+    "Undo/redo preserves object transforms and ordering",
+    "Export PNG produces correct resolution and transparent background option",
+    "Texture upload applies to selected material and survives reload via state save",
+    "AI prompt generates valid scene JSON and places matching assets",
+    "OrbitControls limits prevent rotating away from isometric angle",
+    "Performance: maintain ≥ 60 FPS with 200 placed objects on mid-tier device",
+    "Accessibility: keyboard navigation for assets/sidebar; ARIA roles on dialogs",
+    "Persistence: project save/load round-trips without schema loss"
+  ],
+  "NextActions": [
+    "Define asset catalog JSON (ids, names, thumbnails, mesh paths, default transforms)",
+    "Implement OrthographicCamera + OrbitControls limits to achieve fixed isometric",
+    "Build snap-to-grid placement & transform gizmos (move/rotate/delete, undo/redo)",
+    "Create AI scene-schema and prompt→layout mapping (rules + asset synonyms)",
+    "Wire texture upload to TextureLoader and material assignment pipeline",
+    "Implement PNG export (canvas toDataURL) with resolution multiplier",
+    "Ship MVP to Vercel; add Playwright smoke tests in CI"
+  ],
+  "CalculationBreakdown": {
+    "InnovationLevel": 8,
+    "MonetizationPotential": 7,
+    "PostgradBoostScore": 9,
+    "Complexity": 7,
+    "TimeEstimate": 12
+  },
+  "EditorSpec": {
+    "CameraConfig": {
+      "type": "OrthographicCamera",
+      "isoAngles": { "xDeg": 30, "yDeg": 45 },
+      "distance": 50,
+      "fitStrategy": "dynamic-ortho-frustum-on-resize"
+    },
+    "ControlsConfig": {
+      "control": "OrbitControls",
+      "rotate": false,
+      "zoom": true,
+      "pan": true,
+      "angleLimits": { "lockIsometric": true }
+    },
+    "GridAndSnapping": {
+      "gridSize": 1,
+      "snapIncrement": 0.5,
+      "axes": ["x", "z"],
+      "helpers": ["GridHelper", "TransformControls"]
+    },
+    "Export": {
+      "format": "PNG",
+      "transparentBG": true,
+      "scaleMultiplier": 2,
+      "invoke": "renderer.render -> canvas.toDataURL"
+    },
+    "State": {
+      "store": "Zustand",
+      "slices": ["assets", "selection", "history", "scene"],
+      "persistence": "localStorage or file export/import"
+    },
+    "AI": {
+      "promptInput": "natural language",
+      "sceneSchema": {
+        "objects": [
+          { "assetId": "bed_01", "position": [x, y, z], "rotation": [rx, ry, rz], "scale": [sx, sy, sz], "tags": ["bed", "sleep"] }
+        ]
+      },
+      "placementRules": [
+        "rugs center room; lamps near bed/table; pictures on +Z wall; plants in corners"
+      ]
+    }
+  },
+  "Screens": {
+    "Editor": {
+      "Toolbar": ["Select", "Move", "Rotate", "Delete", "Undo", "Redo", "Snap On/Off", "Export"],
+      "Sidebar": {
+        "tabs": ["Assets", "Properties", "Textures", "AI"],
+        "assets": { "search": true, "categories": ["room", "bed", "table", "lamp", "rug", "frames", "plant", "window"] }
+      },
+      "StatusBar": ["fps", "selected count", "hint"]
+    },
+    "Modals": ["ExportModal", "TextureUploadDialog", "ShortcutsHelp"]
+  },
+  "DataModels": {
+    "Asset": { "id": "string", "name": "string", "thumbnail": "string", "url": "string", "category": "string", "defaultTransform": { "position": [0,0,0], "rotation": [0,0,0], "scale": [1,1,1] } },
+    "Scene": { "id": "string", "name": "string", "objects": ["SceneObject"], "createdAt": "iso", "updatedAt": "iso" },
+    "SceneObject": { "id": "string", "assetId": "string", "transform": { "position": [0,0,0], "rotation": [0,0,0], "scale": [1,1,1] }, "metadata": { "tags": ["string"] } }
+  },
+  "API": {
+    "POST /api/ai/scene-from-prompt": { "body": { "prompt": "string" }, "resp": { "scene": "Scene" } },
+    "POST /api/upload/texture": { "formData": ["file"], "resp": { "url": "string" } }
+  },
+  "Dependencies": [
+    "three",
+    "zustand",
+    "@radix-ui/react-*",
+    "tailwindcss",
+    "shadcn/ui",
+    "@dnd-kit/core",
+    "three-stdlib (OrbitControls, TransformControls)"
+  ],
+  "Accessibility": {
+    "keyboardShortcuts": {
+      "Delete": "delete selection",
+      "Ctrl+Z": "undo",
+      "Ctrl+Y": "redo",
+      "G": "toggle grid snap"
+    },
+    "radixRoles": true
+  }
+}
