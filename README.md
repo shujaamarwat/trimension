@@ -1,72 +1,151 @@
-# trimension
+# Trimension
 
- The repo contains a collection of experiments built with three.js, a powerful JavaScript library for creating 3D graphics in the browse
+An **Isometric Room Editor** - a web-based 3D studio application for creating and designing room layouts using an isometric camera view. The application allows users to drag and drop furniture assets, arrange them in 3D space with snap-to-grid functionality, apply textures, generate scenes using AI prompts, and export their creations.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Features
+
+- **3D Room Design**: Create and arrange room layouts with an intuitive isometric perspective
+- **Asset Library**: Drag & drop furniture models (beds, tables, lamps, rugs, frames, plants, windows, chairs)
+- **Snap-to-Grid**: Precise object placement with 0.5 unit grid increments
+- **Transform Tools**: Move, rotate, scale, and delete objects with undo/redo functionality
+- **AI Scene Generation**: Use OpenAI API to generate room layouts from text descriptions
+- **Texture System**: Upload and apply custom textures to objects
+- **Export Options**: PNG export with resolution multiplier and transparent background support
+- **Keyboard Shortcuts**: Comprehensive shortcuts for efficient workflow
+
+## Getting Started
+
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo-url>
+   cd trimension
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   Create a `.env` file in the root directory:
+   ```env
+   OPENAI_API_KEY=your_openai_api_key_here
+   DATABASE_URL=your_neon_database_url_here
+   ```
+
+4. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open your browser**
+   Navigate to [http://localhost:5000](http://localhost:5000)
 
 ## Available Scripts
 
-In the project directory, you can run:
+- **`npm run dev`** - Starts both client and server in development mode
+- **`npm run build`** - Builds the app for production
+- **`npm run preview`** - Preview the production build locally
 
-### `npm start`
+## Architecture
 
-Runs the app in the development mode.
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Frontend
+- **Framework**: React 18 with TypeScript
+- **Build Tool**: Vite for fast development and optimized builds
+- **3D Rendering**: Three.js with React Three Fiber
+- **UI Components**: Radix UI primitives with shadcn/ui and Tailwind CSS
+- **State Management**: Zustand stores for scene objects and editor state
 
-The page will reload when you make changes.
-You may also see any lint errors in the console.
+### Backend
+- **Server**: Express.js with TypeScript
+- **Database**: PostgreSQL with Drizzle ORM
+- **File Handling**: Multer middleware for texture uploads
+- **AI Integration**: OpenAI API for scene generation
 
-### `npm test`
+### 3D Scene
+- **Camera**: OrthographicCamera with fixed isometric viewing angle
+- **Controls**: OrbitControls with restricted rotation
+- **Grid System**: Snap-to-grid with 0.5 unit increments
+- **Asset Formats**: GLTF/GLB 3D models with fallback geometry
 
-Launches the test runner in the interactive watch mode.
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Controls
 
-### `npm run build`
+### Keyboard Shortcuts
+- **Q** - Select tool
+- **W** - Move tool  
+- **E** - Rotate tool
+- **R** - Scale tool
+- **G** - Toggle grid
+- **Delete** - Delete selected object
+- **Ctrl+Z** - Undo
+- **Ctrl+Y** - Redo
 
-Builds the app for production to the `build` folder.
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Mouse Controls
+- **Left Click** - Select objects
+- **Drag** - Move objects (when in move mode)
+- **Right Click + Drag** - Rotate camera
+- **Scroll** - Zoom in/out
 
-The build is minified and the filenames include the hashes.
-Your app is ready to be deployed!
+## Project Structure
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+trimension/
+├── client/                 # React frontend application
+│   ├── src/
+│   │   ├── components/    # React components
+│   │   ├── hooks/        # Custom React hooks
+│   │   ├── lib/          # Utilities and stores
+│   │   └── pages/        # Page components
+│   └── public/           # Static assets (3D models, textures)
+├── server/                # Express.js backend
+│   ├── routes/           # API route handlers
+│   ├── services/         # Business logic services
+│   └── storage.ts        # File storage configuration
+├── shared/                # Shared types and schemas
+└── uploads/              # User-uploaded textures
+```
 
-### `npm run eject`
+## Development
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Adding New Assets
+1. Place 3D models in `client/public/assets/models/`
+2. Add thumbnails in `client/public/assets/thumbnails/`
+3. Update the asset configuration in `client/src/lib/assets.ts`
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Custom Textures
+- Supported formats: PNG, JPG
+- Maximum file size: 10MB
+- Upload via the texture dialog in the editor
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Deployment
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+The application is built with Vite and can be deployed to any static hosting service. The backend API can be deployed separately to platforms like:
+- Vercel
+- Netlify
+- Railway
+- Heroku
 
-## Learn More
+## Contributing
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## License
 
-### Code Splitting
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Acknowledgments
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- [Three.js](https://threejs.org/) - 3D graphics library
+- [React Three Fiber](https://github.com/pmndrs/react-three-fiber) - React renderer for Three.js
+- [shadcn/ui](https://ui.shadcn.com/) - Beautiful UI components
+- [OpenAI](https://openai.com/) - AI scene generation capabilities
