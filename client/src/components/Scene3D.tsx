@@ -5,45 +5,32 @@ import * as THREE from "three";
 import { useScene } from "@/lib/stores/useScene";
 import { useEditor } from "@/lib/stores/useEditor";
 import { useAssets } from "@/lib/stores/useAssets";
+import DebugPanel from "./DebugPanel";
 
 // Component for rendering individual scene objects
 const SceneObjectRenderer: React.FC<{ object: any }> = ({ object }) => {
   const { assets } = useAssets();
   const { selectedObjects, tool } = useEditor();
-  const { updateObject } = useScene();
   const asset = assets.find(a => a.id === object.assetId);
-  const [isDragging, setIsDragging] = useState(false);
   
   if (!asset) return null;
 
   const isSelected = selectedObjects.includes(object.id);
 
   const handlePointerDown = (event: ThreeEvent<PointerEvent>) => {
+    event.stopPropagation();
+    
+    console.log('🟡 OBJECT POINTER DOWN:', {
+      objectId: object.id,
+      isSelected,
+      tool,
+      canMove: tool === 'move' && isSelected
+    });
+    
+    // If in move tool and object is selected, start dragging
     if (tool === 'move' && isSelected) {
-      event.stopPropagation();
-      setIsDragging(true);
-    }
-  };
-
-  const handlePointerMove = (event: ThreeEvent<PointerEvent>) => {
-    if (isDragging && tool === 'move') {
-      event.stopPropagation();
-      
-      // Get intersection point
-      const point = event.point;
-      updateObject(object.id, {
-        transform: {
-          ...object.transform,
-          position: [point.x, point.y, point.z]
-        }
-      });
-    }
-  };
-
-  const handlePointerUp = (event: ThreeEvent<PointerEvent>) => {
-    if (isDragging) {
-      event.stopPropagation();
-      setIsDragging(false);
+      // Set the dragging object in the parent component
+      event.nativeEvent.stopPropagation();
     }
   };
 
@@ -58,15 +45,21 @@ const SceneObjectRenderer: React.FC<{ object: any }> = ({ object }) => {
         scale={object.transform.scale}
         userData={{ objectId: object.id }}
         onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
       >
         <primitive object={clonedScene} />
         {isSelected && (
-          <mesh>
-            <boxGeometry args={[1.2, 1.2, 1.2]} />
-            <meshBasicMaterial color="yellow" wireframe />
-          </mesh>
+          <>
+            <mesh>
+              <boxGeometry args={[1.2, 1.2, 1.2]} />
+              <meshBasicMaterial color="yellow" wireframe />
+            </mesh>
+            {tool === 'move' && (
+              <mesh>
+                <boxGeometry args={[1.3, 1.3, 1.3]} />
+                <meshBasicMaterial color="red" wireframe opacity={0.5} transparent />
+              </mesh>
+            )}
+          </>
         )}
       </group>
     );
@@ -79,18 +72,24 @@ const SceneObjectRenderer: React.FC<{ object: any }> = ({ object }) => {
         scale={object.transform.scale}
         userData={{ objectId: object.id }}
         onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
       >
         <mesh>
           <boxGeometry args={[1, 1, 1]} />
           <meshStandardMaterial color={isSelected ? "#ffaa00" : "#888888"} />
         </mesh>
         {isSelected && (
-          <mesh>
-            <boxGeometry args={[1.2, 1.2, 1.2]} />
-            <meshBasicMaterial color="yellow" wireframe />
-          </mesh>
+          <>
+            <mesh>
+              <boxGeometry args={[1.2, 1.2, 1.2]} />
+              <meshBasicMaterial color="yellow" wireframe />
+            </mesh>
+            {tool === 'move' && (
+              <mesh>
+                <boxGeometry args={[1.3, 1.3, 1.3]} />
+                <meshBasicMaterial color="red" wireframe opacity={0.5} transparent />
+              </mesh>
+            )}
+          </>
         )}
       </group>
     );
@@ -155,11 +154,41 @@ const GroundPlane: React.FC = () => {
 // Main 3D Scene component
 const Scene3D: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { currentScene } = useScene();
-  const { selectedObjects, setSelectedObjects } = useEditor();
+  const { currentScene, updateObject } = useScene();
+  const { selectedObjects, setSelectedObjects, tool, snapToGrid, gridSize } = useEditor();
+  const [draggingObject, setDraggingObject] = useState<string | null>(null);
+  const [dragStartPosition, setDragStartPosition] = useState<THREE.Vector3 | null>(null);
+  
+  // Debug state
+  const [debugInfo, setDebugInfo] = useState({
+    position: null as [number, number, number] | null,
+    objectId: null as string | null,
+    isDragging: false,
+    lastEvent: 'None'
+  });
+
+  const snapToGridValue = (value: number) => {
+    if (!snapToGrid) return value;
+    return Math.round(value / gridSize) * gridSize;
+  };
 
   const handleClick = (event: any) => {
     event.stopPropagation();
+    
+    console.log('🔵 CLICK EVENT:', {
+      object: event.object,
+      objectId: event.object?.userData?.objectId,
+      point: event.point,
+      ctrlKey: event.ctrlKey,
+      metaKey: event.metaKey
+    });
+    
+    setDebugInfo(prev => ({
+      ...prev,
+      lastEvent: 'Click',
+      position: event.point ? [event.point.x, event.point.y, event.point.z] : null,
+      objectId: event.object?.userData?.objectId || null
+    }));
     
     if (event.object && event.object.userData?.objectId) {
       const objectId = event.object.userData.objectId;
@@ -181,8 +210,93 @@ const Scene3D: React.FC = () => {
     }
   };
 
+  const handlePointerDown = (event: any) => {
+    console.log('🟡 POINTER DOWN:', {
+      object: event.object,
+      objectId: event.object?.userData?.objectId,
+      point: event.point,
+      tool,
+      selectedObjects,
+      isSelected: event.object?.userData?.objectId ? selectedObjects.includes(event.object.userData.objectId) : false
+    });
+    
+    setDebugInfo(prev => ({
+      ...prev,
+      lastEvent: 'Pointer Down',
+      position: event.point ? [event.point.x, event.point.y, event.point.z] : null,
+      objectId: event.object?.userData?.objectId || null
+    }));
+    
+    if (event.object && event.object.userData?.objectId) {
+      const objectId = event.object.userData.objectId;
+      const isSelected = selectedObjects.includes(objectId);
+      
+      if (tool === 'move' && isSelected) {
+        console.log('🟢 STARTING DRAG for object:', objectId);
+        setDraggingObject(objectId);
+        setDragStartPosition(event.point.clone());
+        setDebugInfo(prev => ({ ...prev, isDragging: true }));
+        event.stopPropagation();
+      }
+    }
+  };
+
+  const handlePointerMove = (event: any) => {
+    if (draggingObject && tool === 'move') {
+      const point = event.point;
+      if (point) {
+        const snappedX = snapToGridValue(point.x);
+        const snappedY = snapToGridValue(point.y);
+        const snappedZ = snapToGridValue(point.z);
+        
+        console.log('🔴 DRAGGING:', {
+          draggingObject,
+          originalPoint: [point.x, point.y, point.z],
+          snappedPoint: [snappedX, snappedY, snappedZ],
+          snapToGrid,
+          gridSize
+        });
+        
+        updateObject(draggingObject, {
+          transform: {
+            ...currentScene.objects.find(obj => obj.id === draggingObject)?.transform,
+            position: [snappedX, snappedY, snappedZ]
+          }
+        });
+        
+        setDebugInfo(prev => ({
+          ...prev,
+          lastEvent: 'Dragging',
+          position: [snappedX, snappedY, snappedZ]
+        }));
+      }
+    } else {
+      // Update debug info even when not dragging
+      setDebugInfo(prev => ({
+        ...prev,
+        lastEvent: 'Pointer Move',
+        position: event.point ? [event.point.x, event.point.y, event.point.z] : null,
+        objectId: event.object?.userData?.objectId || null
+      }));
+    }
+  };
+
+  const handlePointerUp = (event: any) => {
+    console.log('🟣 POINTER UP:', { draggingObject });
+    
+    if (draggingObject) {
+      console.log('🔵 ENDING DRAG for object:', draggingObject);
+      setDraggingObject(null);
+      setDragStartPosition(null);
+      setDebugInfo(prev => ({ ...prev, isDragging: false, lastEvent: 'Pointer Up' }));
+    }
+  };
+
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full relative">
+      {/* Debug Panel */}
+      <DebugPanel pointerInfo={debugInfo} />
+      
       <Canvas
         ref={canvasRef}
         camera={{
@@ -196,6 +310,9 @@ const Scene3D: React.FC = () => {
           preserveDrawingBuffer: true // For PNG export
         }}
         onClick={handleClick}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
       >
         <IsometricCamera />
         

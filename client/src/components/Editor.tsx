@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import Scene3D from "./Scene3D";
 import AssetLibrary from "./AssetLibrary";
+import ObjectList from "./ObjectList";
 import Toolbar from "./Toolbar";
 import StatusBar from "./StatusBar";
 import AIPanel from "./AIPanel";
@@ -45,10 +46,8 @@ const Editor: React.FC = () => {
                     <AssetLibrary />
                   </TabsContent>
                   
-                  <TabsContent value="properties" className="h-full m-0 p-4">
-                    <div className="text-sm text-muted-foreground">
-                      Properties panel - Select objects to edit their properties
-                    </div>
+                  <TabsContent value="properties" className="h-full m-0">
+                    <ObjectList />
                   </TabsContent>
                   
                   <TabsContent value="textures" className="h-full m-0 p-4">
