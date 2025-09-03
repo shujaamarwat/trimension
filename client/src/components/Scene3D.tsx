@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useImperativeHandle, forwardRef } from "react";
 import { Canvas, useFrame, useThree, ThreeEvent } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
@@ -153,13 +153,18 @@ const GroundPlane: React.FC = () => {
   );
 };
 
+export interface Scene3DRef {
+  resetCamera: () => void;
+}
+
 // Main 3D Scene component
-const Scene3D: React.FC = () => {
+const Scene3D = forwardRef<Scene3DRef, {}>((props, ref) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { currentScene, updateObject } = useScene();
   const { selectedObjects, setSelectedObjects, tool, snapToGrid, gridSize } = useEditor();
   const [draggingObject, setDraggingObject] = useState<string | null>(null);
   const [dragStartPosition, setDragStartPosition] = useState<THREE.Vector3 | null>(null);
+  const controlsRef = useRef<any>(null);
   
   // Debug state
   const [debugInfo, setDebugInfo] = useState({
@@ -168,6 +173,14 @@ const Scene3D: React.FC = () => {
     isDragging: false,
     lastEvent: 'None'
   });
+
+  useImperativeHandle(ref, () => ({
+    resetCamera: () => {
+      if (controlsRef.current) {
+        controlsRef.current.reset();
+      }
+    }
+  }));
 
   const snapToGridValue = (value: number) => {
     if (!snapToGrid) return value;
@@ -336,6 +349,7 @@ const Scene3D: React.FC = () => {
         ))}
 
         <OrbitControls
+          ref={controlsRef}
           enableDamping
           dampingFactor={0.05}
           enabled={!draggingObject}
@@ -345,6 +359,6 @@ const Scene3D: React.FC = () => {
       </Canvas>
     </div>
   );
-};
+});
 
 export default Scene3D;

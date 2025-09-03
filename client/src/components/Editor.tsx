@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
-import Scene3D from "./Scene3D";
+import Scene3D, { Scene3DRef } from "./Scene3D";
 import AssetLibrary from "./AssetLibrary";
 import ObjectList from "./ObjectList";
 import Toolbar from "./Toolbar";
@@ -18,8 +18,15 @@ const Editor: React.FC = () => {
   const [showExportModal, setShowExportModal] = useState(false);
   const [showTextureDialog, setShowTextureDialog] = useState(false);
   const [showShortcutsHelp, setShowShortcutsHelp] = useState(false);
+  const scene3DRef = useRef<Scene3DRef>(null);
 
   useKeyboardShortcuts();
+
+  const handleResetView = () => {
+    if (scene3DRef.current) {
+      scene3DRef.current.resetCamera();
+    }
+  };
 
   return (
     <div className="h-screen flex flex-col bg-background">
@@ -27,6 +34,7 @@ const Editor: React.FC = () => {
       <Toolbar 
         onExport={() => setShowExportModal(true)}
         onHelp={() => setShowShortcutsHelp(true)}
+        onResetView={handleResetView}
       />
 
       {/* Main Editor Area */}
@@ -75,7 +83,7 @@ const Editor: React.FC = () => {
           <ResizablePanel defaultSize={75}>
             <div className="h-full flex flex-col relative">
               <div className="flex-1">
-                <Scene3D />
+                <Scene3D ref={scene3DRef} />
               </div>
               <ModeToolbar />
               <MoveToolbar />

@@ -14,16 +14,18 @@ import {
   Grid3X3,
   Download,
   HelpCircle,
-  Save
+  Save,
+  Maximize
 } from "lucide-react";
 import { DarkModeToggle } from "@/components/dark-mode-toggle";
 
 interface ToolbarProps {
   onExport: () => void;
   onHelp: () => void;
+  onResetView: () => void;
 }
 
-const Toolbar: React.FC<ToolbarProps> = ({ onExport, onHelp }) => {
+const Toolbar: React.FC<ToolbarProps> = ({ onExport, onHelp, onResetView }) => {
   const { 
     tool, 
     setTool, 
@@ -99,6 +101,9 @@ const Toolbar: React.FC<ToolbarProps> = ({ onExport, onHelp }) => {
         >
           <Grid3X3 className="h-4 w-4" />
           {snapToGrid && <Badge className="ml-1 text-xs">ON</Badge>}
+        </Button>
+        <Button variant="ghost" size="sm" onClick={onResetView} title="Reset View">
+          <Maximize className="h-4 w-4" />
         </Button>
       </div>
 
