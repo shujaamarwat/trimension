@@ -20,7 +20,7 @@ export const DEFAULT_ASSETS: Asset[] = [
     url: "/assets/models/bed_01.glb",
     category: "bed",
     defaultTransform: {
-      position: [0, 0, 0],
+      position: [0, 0.2, 0],
       rotation: [0, 0, 0],
       scale: [1, 1, 1]
     }
@@ -32,7 +32,7 @@ export const DEFAULT_ASSETS: Asset[] = [
     url: "/assets/models/table_01.glb",
     category: "table",
     defaultTransform: {
-      position: [0, 0, 0],
+      position: [0, 0.2, 0],
       rotation: [0, 0, 0],
       scale: [1, 1, 1]
     }
@@ -56,7 +56,7 @@ export const DEFAULT_ASSETS: Asset[] = [
     url: "/assets/models/chair_01.glb",
     category: "chair",
     defaultTransform: {
-      position: [0, 0, 0],
+      position: [0, 0.5, 0],
       rotation: [0, 0, 0],
       scale: [1, 1, 1]
     }
@@ -80,7 +80,7 @@ export const DEFAULT_ASSETS: Asset[] = [
     url: "/assets/models/plant_01.glb",
     category: "plant",
     defaultTransform: {
-      position: [0, 0, 0],
+      position: [0, 0.5, 0],
       rotation: [0, 0, 0],
       scale: [1, 1, 1]
     }

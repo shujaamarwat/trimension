@@ -24,10 +24,13 @@ const AssetLibrary: React.FC = () => {
   const filteredAssets = getFilteredAssets();
 
   const handleAssetDrop = (assetId: string) => {
-    // Add object to scene at origin
+    const asset = filteredAssets.find(a => a.id === assetId);
+    if (!asset) return;
+
+    // Add object to scene using default transform
     const newObject = {
       assetId,
-      transform: {
+      transform: asset.defaultTransform || {
         position: [0, 0, 0] as [number, number, number],
         rotation: [0, 0, 0] as [number, number, number],
         scale: [1, 1, 1] as [number, number, number]
