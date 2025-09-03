@@ -11,6 +11,8 @@ import TextureUploadDialog from "./TextureUploadDialog";
 import ShortcutsHelp from "./ShortcutsHelp";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
+import { ModeToolbar } from "./ModeToolbar";
+import { MoveToolbar } from "./MoveToolbar";
 
 const Editor: React.FC = () => {
   const [showExportModal, setShowExportModal] = useState(false);
@@ -31,7 +33,7 @@ const Editor: React.FC = () => {
       <div className="flex-1 overflow-hidden">
         <ResizablePanelGroup direction="horizontal">
           {/* Left Sidebar */}
-          <ResizablePanel defaultSize={25} minSize={20} maxSize={40}>
+          <ResizablePanel defaultSize={25} minSize={20} maxSize={40} collapsible={true}>
             <div className="h-full border-r border-border bg-card">
               <Tabs defaultValue="assets" className="h-full flex flex-col">
                 <TabsList className="grid w-full grid-cols-4 m-2">
@@ -71,10 +73,12 @@ const Editor: React.FC = () => {
 
           {/* Main Canvas Area */}
           <ResizablePanel defaultSize={75}>
-            <div className="h-full flex flex-col">
+            <div className="h-full flex flex-col relative">
               <div className="flex-1">
                 <Scene3D />
               </div>
+              <ModeToolbar />
+              <MoveToolbar />
               <StatusBar />
             </div>
           </ResizablePanel>

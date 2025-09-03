@@ -68,8 +68,8 @@ const AIPanel: React.FC = () => {
       <Card className="flex-1">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Wand2 className="h-5 w-5" />
-            AI Scene Generator
+              <Wand2 className="h-5 w-5" />
+              AI Scene Generator
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">

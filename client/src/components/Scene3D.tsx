@@ -102,18 +102,19 @@ const IsometricCamera: React.FC = () => {
 
   useEffect(() => {
     if (camera instanceof THREE.OrthographicCamera) {
-      // Set isometric angles (30° and 45°)
-      const distance = 50;
-      const isoX = Math.cos(Math.PI / 6) * Math.cos(Math.PI / 4) * distance; // 30° * 45°
-      const isoY = Math.sin(Math.PI / 6) * distance; // 30°
-      const isoZ = Math.cos(Math.PI / 6) * Math.sin(Math.PI / 4) * distance; // 30° * 45°
+      const distance = 20; // Closer for a tighter room view
+      const angle = Math.PI / 4;
+      const heightAngle = Math.atan(1 / Math.sqrt(2));
 
-      camera.position.set(isoX, isoY, isoZ);
+      camera.position.set(
+        distance * Math.sin(angle),
+        distance * Math.sin(heightAngle),
+        distance * Math.cos(angle)
+      );
       camera.lookAt(0, 0, 0);
 
-      // Set orthographic camera properties
       const aspect = size.width / size.height;
-      const viewSize = 20;
+      const viewSize = 10; // Zoom in to fit the 20x20 grid
       camera.left = -viewSize * aspect;
       camera.right = viewSize * aspect;
       camera.top = viewSize;
@@ -133,9 +134,10 @@ const GridAndSnap: React.FC = () => {
   
   if (!snapToGrid) return null;
 
+  // Grid size of 20 with 40 divisions for 0.5 unit increments
   return (
     <primitive 
-      object={new THREE.GridHelper(20, 20, "#888888", "#444444")} 
+      object={new THREE.GridHelper(20, 40, "#888888", "#444444")} 
       position={[0, 0, 0]}
     />
   );
@@ -144,9 +146,9 @@ const GridAndSnap: React.FC = () => {
 // Ground plane for drag interactions
 const GroundPlane: React.FC = () => {
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]} visible={false}>
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.05, 0]} visible={false}>
       <planeGeometry args={[100, 100]} />
-      <meshBasicMaterial />
+      <meshBasicMaterial transparent opacity={0} />
     </mesh>
   );
 };
@@ -307,7 +309,7 @@ const Scene3D: React.FC = () => {
         orthographic
         gl={{ 
           antialias: true,
-          preserveDrawingBuffer: true // For PNG export
+          preserveDrawingBuffer: true
         }}
         onClick={handleClick}
         onPointerDown={handlePointerDown}
@@ -316,7 +318,6 @@ const Scene3D: React.FC = () => {
       >
         <IsometricCamera />
         
-        {/* Lighting */}
         <ambientLight intensity={0.6} />
         <directionalLight 
           position={[10, 10, 5]} 
@@ -326,22 +327,18 @@ const Scene3D: React.FC = () => {
           shadow-mapSize-height={2048}
         />
 
-        {/* Grid */}
         <GridAndSnap />
 
-        {/* Ground plane for interactions */}
         <GroundPlane />
 
-        {/* Scene Objects */}
         {currentScene.objects.map((object) => (
           <SceneObjectRenderer key={object.id} object={object} />
         ))}
 
-        {/* Controls */}
         <OrbitControls
-          enableRotate={false} // Lock rotation for isometric view
-          enableZoom={true}
-          enablePan={true}
+          enableDamping
+          dampingFactor={0.05}
+          enabled={!draggingObject}
           maxZoom={100}
           minZoom={0.1}
         />

@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 import { useEditor } from "@/lib/stores/useEditor";
 import { useScene } from "@/lib/stores/useScene";
+import { SceneObject } from "@/lib/types";
 
 export const useKeyboardShortcuts = () => {
-  const { undo, redo, canUndo, canRedo, toggleSnapToGrid, setTool, selectedObjects } = useEditor();
-  const { removeObject } = useScene();
+  const { undo, redo, canUndo, canRedo, toggleSnapToGrid, setTool, selectedObjects, tool } = useEditor();
+  const { removeObject, updateObject, currentScene } = useScene();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Prevent default browser shortcuts when appropriate
       if (event.ctrlKey || event.metaKey) {
         switch (event.key.toLowerCase()) {
           case 'z':
@@ -53,11 +53,54 @@ export const useKeyboardShortcuts = () => {
             event.preventDefault();
             setTool('scale');
             break;
+            case 'arrowup':
+            case 'arrowdown':
+            case 'arrowleft':
+            case 'arrowright':
+              if (tool === 'move' && selectedObjects.length > 0) {
+                event.preventDefault();
+                const moveAmount = 0.1;
+                let axis: 'x' | 'z';
+                let direction: number;
+
+                switch (event.key.toLowerCase()) {
+                    case 'arrowup':
+                        axis = 'x';
+                        direction = -1;
+                        break;
+                    case 'arrowdown':
+                        axis = 'x';
+                        direction = 1;
+                        break;
+                    case 'arrowleft':
+                        axis = 'z';
+                        direction = 1;
+                        break;
+                    case 'arrowright':
+                        axis = 'z';
+                        direction = -1;
+                        break;
+                    default:
+                        return;
+                }
+
+                selectedObjects.forEach((id) => {
+                    const object = currentScene.objects.find((o) => o.id === id);
+                    if (object) {
+                        const newPosition: [number, number, number] = [...object.transform.position];
+                        if (axis === 'x') newPosition[0] += moveAmount * direction;
+                        if (axis === 'z') newPosition[2] += moveAmount * direction;
+                        
+                        updateObject(id, { transform: { ...object.transform, position: newPosition } });
+                    }
+                });
+            }
+            break;
         }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [undo, redo, canUndo, canRedo, toggleSnapToGrid, setTool, selectedObjects, removeObject]);
+  }, [undo, redo, canUndo, canRedo, toggleSnapToGrid, setTool, selectedObjects, removeObject, tool, updateObject, currentScene]);
 };

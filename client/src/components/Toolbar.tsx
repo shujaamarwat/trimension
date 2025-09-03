@@ -16,6 +16,7 @@ import {
   HelpCircle,
   Save
 } from "lucide-react";
+import { DarkModeToggle } from "@/components/dark-mode-toggle";
 
 interface ToolbarProps {
   onExport: () => void;
@@ -52,7 +53,10 @@ const Toolbar: React.FC<ToolbarProps> = ({ onExport, onHelp }) => {
               key={toolItem.id}
               variant={tool === toolItem.id ? "default" : "ghost"}
               size="sm"
-              onClick={() => setTool(toolItem.id as any)}
+              onClick={() => {
+                console.log(`Tool selected: ${toolItem.id}`);
+                setTool(toolItem.id as any);
+              }}
               title={toolItem.label}
             >
               <toolItem.icon className="h-4 w-4" />
@@ -110,6 +114,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ onExport, onHelp }) => {
         <Button variant="ghost" size="sm" onClick={onHelp} title="Keyboard Shortcuts">
           <HelpCircle className="h-4 w-4" />
         </Button>
+        <DarkModeToggle />
       </div>
     </div>
   );
