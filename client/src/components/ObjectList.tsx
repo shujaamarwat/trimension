@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Trash2, Copy, Eye, EyeOff } from "lucide-react";
+import { Trash2, Copy, Eye, EyeOff, ArrowUp, ArrowDown, ArrowLeft, ArrowRight } from "lucide-react";
 
 const ObjectList: React.FC = () => {
   const { currentScene, removeObject, updateObject } = useScene();
@@ -197,7 +197,7 @@ const ObjectList: React.FC = () => {
                     
                     {isSelected && (
                       <div className="mt-2 pt-2 border-t border-blue-200 dark:border-blue-800">
-                        <div className="flex gap-2">
+                         <div className="flex gap-2 items-center">
                           <Button
                             size="sm"
                             variant={tool === 'move' ? 'default' : 'outline'}
@@ -207,7 +207,7 @@ const ObjectList: React.FC = () => {
                               setTool('move');
                             }}
                           >
-                            Move
+                            Move (W)
                           </Button>
                           <Button
                             size="sm"
@@ -218,7 +218,7 @@ const ObjectList: React.FC = () => {
                               setTool('rotate');
                             }}
                           >
-                            Rotate
+                            Rotate (E)
                           </Button>
                           <Button
                             size="sm"
@@ -229,9 +229,19 @@ const ObjectList: React.FC = () => {
                               setTool('scale');
                             }}
                           >
-                            Scale
+                            Scale (R)
                           </Button>
                         </div>
+                        {tool === 'move' && (
+                          <div className="text-xs text-muted-foreground mt-2 flex items-center gap-2">
+                            Use <ArrowUp className="h-3 w-3 inline" /> <ArrowDown className="h-3 w-3 inline" /> <ArrowLeft className="h-3 w-3 inline" /> <ArrowRight className="h-3 w-3 inline" /> to move
+                          </div>
+                        )}
+                         {tool === 'rotate' && (
+                          <div className="text-xs text-muted-foreground mt-2 flex items-center gap-2">
+                            Use <ArrowLeft className="h-3 w-3 inline" /> <ArrowRight className="h-3 w-3 inline" /> to rotate
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>

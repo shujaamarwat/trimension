@@ -13,6 +13,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { ModeToolbar } from "./ModeToolbar";
 import { MoveToolbar } from "./MoveToolbar";
+import { RotateToolbar } from "./RotateToolbar";
+import { ScaleToolbar } from "./ScaleToolbar";
 
 const Editor: React.FC = () => {
   const [showExportModal, setShowExportModal] = useState(false);
@@ -87,6 +89,8 @@ const Editor: React.FC = () => {
               </div>
               <ModeToolbar />
               <MoveToolbar />
+              <RotateToolbar />
+              <ScaleToolbar />
               <StatusBar />
             </div>
           </ResizablePanel>

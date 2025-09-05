@@ -94,7 +94,59 @@ export const useKeyboardShortcuts = () => {
                         updateObject(id, { transform: { ...object.transform, position: newPosition } });
                     }
                 });
+            } else if (tool === 'rotate' && selectedObjects.length > 0) {
+              event.preventDefault();
+              const rotateAmount = Math.PI / 12; // 15 degrees
+              let direction = 1;
+
+              switch (event.key.toLowerCase()) {
+                case 'arrowleft':
+                  direction = 1;
+                  break;
+                case 'arrowright':
+                  direction = -1;
+                  break;
+                default:
+                  return;
             }
+
+            selectedObjects.forEach((id) => {
+              const object = currentScene.objects.find((o) => o.id === id);
+              if (object) {
+                const newRotation: [number, number, number] = [...object.transform.rotation];
+                newRotation[1] += rotateAmount * direction;
+                updateObject(id, { transform: { ...object.transform, rotation: newRotation } });
+              }
+            });
+          } else if (tool === 'scale' && selectedObjects.length > 0) {
+            event.preventDefault();
+            const scaleAmount = 0.1;
+            let direction = 1;
+
+            switch (event.key.toLowerCase()) {
+              case 'arrowup':
+              case 'arrowright':
+                direction = 1;
+                break;
+              case 'arrowdown':
+              case 'arrowleft':
+                direction = -1;
+                break;
+              default:
+                return;
+            }
+
+            selectedObjects.forEach((id) => {
+              const object = currentScene.objects.find((o) => o.id === id);
+              if (object) {
+                const newScale: [number, number, number] = [...object.transform.scale];
+                newScale[0] += scaleAmount * direction;
+                newScale[1] += scaleAmount * direction;
+                newScale[2] += scaleAmount * direction;
+                updateObject(id, { transform: { ...object.transform, scale: newScale } });
+              }
+            });
+          }
             break;
         }
       }
