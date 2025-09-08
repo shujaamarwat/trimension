@@ -15,6 +15,7 @@ import { ModeToolbar } from "./ModeToolbar";
 import { MoveToolbar } from "./MoveToolbar";
 import { RotateToolbar } from "./RotateToolbar";
 import { ScaleToolbar } from "./ScaleToolbar";
+import { env } from "@/lib/utils";
 
 const Editor: React.FC = () => {
   const [showExportModal, setShowExportModal] = useState(false);
@@ -91,7 +92,7 @@ const Editor: React.FC = () => {
               <MoveToolbar />
               <RotateToolbar />
               <ScaleToolbar />
-              <StatusBar />
+              {env.isDev && <StatusBar />}
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>

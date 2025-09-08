@@ -6,6 +6,7 @@ import { useScene } from "@/lib/stores/useScene";
 import { useEditor } from "@/lib/stores/useEditor";
 import { useAssets } from "@/lib/stores/useAssets";
 import DebugPanel from "./DebugPanel";
+import { env } from "@/lib/utils";
 
 // Component for rendering individual scene objects
 const SceneObjectRenderer: React.FC<{ object: any }> = ({ object }) => {
@@ -309,10 +310,10 @@ const Scene3D = forwardRef<Scene3DRef, {}>((props, ref) => {
 
   return (
     <div className="w-full h-full relative">
-      {/* Debug Panel */}
-      <DebugPanel pointerInfo={debugInfo} />
+      {/* Debug Panel (dev-only by default, can be overridden via VITE_SHOW_DEBUG) */}
+      {env.isDev && <DebugPanel pointerInfo={debugInfo} />}
       
-      <Canvas
+    <Canvas
         ref={canvasRef}
         camera={{
           position: [10, 10, 10],
