@@ -2,6 +2,8 @@
 
 An **Isometric Room Editor** - a web-based 3D studio application for creating and designing room layouts using an isometric camera view. The application allows users to drag and drop furniture assets, arrange them in 3D space with snap-to-grid functionality, apply textures, generate scenes using AI prompts, and export their creations.
 
+Live app: [trimension-sooty.vercel.app](https://trimension-sooty.vercel.app/)
+
 ## Features
 
 - **3D Room Design**: Create and arrange room layouts with an intuitive isometric perspective
